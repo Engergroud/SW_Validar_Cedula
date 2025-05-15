@@ -69,6 +69,6 @@ router.get('/validate', (req, res) => {
     }
     
     });
-});
+
 
 module.exports = router;
