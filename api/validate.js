@@ -2,8 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 function validateCedula(cedula) {
-    if (!/^\d+$/.test(cedula) || cedula.length !== 11) {
-        return false;
+    // Verificar si la cédula está vacía, es null o undefined
+    if (!cedula) {
+        return { isValid: false, error: 'No se proporcionó una cédula' };
+    }
+
+    // Verificar si la cédula contiene letras
+    if (!/^\d+$/.test(cedula)) {
+        return { isValid: false, error: 'La cédula contiene caracteres no numéricos' };
+    }
+
+    // Verificar si la cédula tiene exactamente 11 dígitos
+    if (cedula.length !== 11) {
+        return { isValid: false, error: 'La cédula debe contener 11 dígitos numéricos' };
     }
 
     const digitoVerificador = parseInt(cedula[10], 10);
@@ -29,31 +40,25 @@ function validateCedula(cedula) {
 
     const modulo = (sumaTotal % 10 !== 0) ? (10 - (sumaTotal % 10)) : 0;
 
-    return modulo === digitoVerificador;
+    const isValid = modulo === digitoVerificador;
+
+    if (!isValid) {
+        return { isValid: false, error: 'Cédula inválida' };
+    }
+
+    return { isValid: true, message: 'Cédula Válida' };
 }
 
 router.get('/validate', (req, res) => {
     const { cedula } = req.query;
 
-    if (!cedula) {
-        return res.status(400).json({ error: 'No se proporcionó una cédula' });
-    }
+    const validationResult = validateCedula(cedula);
 
-    const isValid = validateCedula(cedula);
-
-    if (isValid) {
-        res.json({
-            cedula,
-            isValid,
-            message: 'Cédula Válida'
-        });
-    } else {
-        res.json({
-            cedula,
-            isValid,
-            error: 'Cédula inválida: debe contener 11 dígitos numéricos.'
-        });
-    }
+    res.json({
+        cedula,
+        isValid: validationResult.isValid,
+        message: validationResult.message || validationResult.error
+    });
 });
 
 module.exports = router;
