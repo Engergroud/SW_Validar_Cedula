@@ -48,7 +48,7 @@ router.get('/validate', (req, res) => {
             message: 'Cédula Válida'
         });
     } else {
-        res.status(400).json({
+        res.json({
             cedula,
             isValid,
             error: 'Cédula inválida: debe contener 11 dígitos numéricos.'
