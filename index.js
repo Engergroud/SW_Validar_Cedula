@@ -1,6 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const port = 10000;
+const port = process.env.PORT || 10000;
+
+// Configurar CORS para permitir solicitudes desde tu origen específico
+const corsOptions = {
+    origin: 'https://engergroud.github.io'
+};
+
+app.use(cors(corsOptions)); // Habilita CORS con las opciones especificadas
 
 app.use(express.json());
 
