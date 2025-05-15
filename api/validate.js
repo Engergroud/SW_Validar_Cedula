@@ -54,21 +54,11 @@ router.get('/validate', (req, res) => {
 
     const validationResult = validateCedula(cedula);
 
-    if (isValid) {
-        res.json({
+    res.json({
         cedula,
         isValid: validationResult.isValid,
-        message: validationResult.message
-        });
-    } else {
-        res.json({
-            cedula,
-            isValid,
-            error: validationResult.error
-        });
-    }
-    
+        message: validationResult.message || validationResult.error
     });
-
+});
 
 module.exports = router;
